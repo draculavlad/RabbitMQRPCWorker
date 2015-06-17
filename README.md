@@ -1,5 +1,5 @@
 # RabbitMQRPCWorker
-Use amqplib to set up a nodejs application to be a RabbitMQ RPC worker capable of working on multi-cpu-core.
+Use amqplib to set up a nodejs application to be a RabbitMQ RPC worker capable of working on multi-cpu-core. This is a example to show your guys how to use amqplib to do the RabbitMQ RPC worker job.
 
 ## setup##
 ```shell
