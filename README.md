@@ -47,11 +47,13 @@ amqpRecv.connect(rmqURI).then(function(connRecv) {
         function doWork(msgRecv){
         
           console.log(msgRecv);                              //print recieved message content
-          console.log(msgRecv.properties.correlationId);     //print recieved message correlationId (for the message consumer to find with)
+          console.log(msgRecv.properties.correlationId);     //print recieved message correlationId (for the RPC caller to find with)
           
           //TODO
           //......put your code here
           
+          
+          //call this method here for a simple introduction, usually we do it when we send out the result, please follow the way I call this methond in the "send the procudure result to RabbitMQ" paragraph 
           chRecv.ack(msgRecv);                               //tell rabbitmq the message is cosumed, usually call this method when the message job is done
         }
     });
@@ -60,6 +62,7 @@ amqpRecv.connect(rmqURI).then(function(connRecv) {
 
 ## send the procudure result to RabbitMQ##
 ```javascript
+        //callBackMsg normally is a JSON Object
         function sendCallBack(callBackMsg,msgRecv) {
             amqpSend.connect(rmqURI).then(function (connSend) {
                 return when(connSend.createChannel().then(function (chSend) {
@@ -72,16 +75,16 @@ amqpRecv.connect(rmqURI).then(function(connRecv) {
                         console.log(" [x] connected to sendQ")
                         var msgSend = JSON.stringify(callBackMsg);
                         console.log(" [x] msgSend is '%s'", msgSend)
-                        var corrId = msgRecv.properties.correlationId;
+                        var corrId = msgRecv.properties.correlationId; //use the corrId for the RPC caller to find with
                         console.log(" [x] corrId is '%s'", corrId)
-                        chSend.sendToQueue(sendQ, new Buffer(msgSend), {correlationId: corrId});
+                        chSend.sendToQueue(sendQ, new Buffer(msgSend), {correlationId: corrId}); //add the corrId in the result message to send
                         console.log(" [x] Sent to new Q");
                         return chSend.close();
                     });
                 })).ensure(function () {
                     connSend.close();
                     console.log(" [x] Done");
-                    chRecv.ack(msgRecv);
+                    chRecv.ack(msgRecv);                               //tell rabbitmq the message is cosumed, usually call this method when the message job is done
                 });
             }).then(null, console.warn);
         }
