@@ -1,0 +1,12 @@
+{
+  "rmqUser":"admin",
+  "rmqPass":"admin",
+  "rmqHost":"1.1.1.1",
+  "rmqPort":"5672",
+  "rmqVirtualHost":"%2F",
+  "rmqExch":"rmq-exchange",
+  "recvQ":"rmq-job-q",
+  "recvRouterKey":"rmq-job-k",
+  "sendQ":"rmq-result-q",
+  "sendRouterKey":"rmq-result-k"
+}
